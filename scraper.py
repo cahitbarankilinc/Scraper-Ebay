@@ -586,14 +586,14 @@ def build_argument_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--input",
         type=Path,
-        required=True,
-        help="Text file containing one listing URL per line.",
+        default=Path("urls.txt"),
+        help="Text file containing one listing URL per line. Defaults to 'urls.txt'.",
     )
     parser.add_argument(
         "--output",
         type=Path,
-        required=True,
-        help="Path where the JSON output should be written.",
+        default=Path("output.json"),
+        help="Path where the JSON output should be written. Defaults to 'output.json'.",
     )
     parser.add_argument(
         "--selectors",
@@ -623,6 +623,10 @@ def main(argv: Optional[List[str]] = None) -> int:
     parser = build_argument_parser()
     args = parser.parse_args(argv)
     logging.basicConfig(level=getattr(logging, args.log_level.upper()), format="%(message)s")
+
+    if not args.input.exists():
+        LOGGER.error("Input file %s does not exist. Create the file or pass --input.", args.input)
+        return 1
 
     urls = load_urls(args.input)
     selector_config = load_selector_config(args.selectors)

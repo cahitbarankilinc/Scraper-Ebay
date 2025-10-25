@@ -27,12 +27,16 @@ pip install -r requirements.txt
 ## Kullanım
 
 1. Ayrıntıları çekmek istediğiniz ilanların URL'lerini her satıra bir URL gelecek
-   şekilde `urls.txt` adında bir dosyaya kaydedin.
+   şekilde `urls.txt` adında bir dosyaya kaydedin. Farklı bir dosya adı
+   kullanacaksanız komut satırında `--input` parametresi ile belirtin.
 2. Aşağıdaki komut ile listeyi işleyip sonuçları `output.json` dosyasına yazın:
 
    ```bash
    python scraper.py --input urls.txt --output output.json
    ```
+
+   Dosya adlarını parametresiz bıraktığınızda komut varsayılan olarak `urls.txt`
+   dosyasını okuyup çıktıyı `output.json` olarak kaydeder.
 
 3. Site yapısı değiştiğinde CSS seçicilerini JSON formatında hazırlayarak
    `--selectors` parametresi ile güncelleyebilirsiniz.
