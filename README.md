@@ -54,3 +54,8 @@ HTML yapısı değişse bile toplanmaya devam eder.
 
 Komut tamamlandığında `output.json` dosyasında her ilan için ayrıntılı kayıtlar
 bulunacaktır.
+
+## Sorun Giderme
+
+- `SyntaxError: invalid decimal literal` hatası ve satırlarda `<<<<<<<`, `=======`, `>>>>>>>` gibi parçalar görüyorsanız dosyada çözümlenmemiş bir git birleşme çatışması bulunuyor demektir. Çatışmayı giderip bu işaretleri sildikten sonra komutu yeniden çalıştırın.
+
