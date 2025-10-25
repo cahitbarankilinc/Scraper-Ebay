@@ -27,12 +27,19 @@ import re
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional
+from urllib.parse import urljoin
 
 import requests
 from bs4 import BeautifulSoup
 
 
 LOGGER = logging.getLogger(__name__)
+
+
+DEFAULT_SEARCH_URL = (
+    "https://www.kleinanzeigen.de/s-autos/stockach/"
+    "c216l8477r100+autos.ez_i:1910%2C+autos.km_i:1%2C+autos.power_i:1%2C"
+)
 
 
 @dataclass
@@ -454,6 +461,37 @@ class EbayCarScraper:
         response.raise_for_status()
         return BeautifulSoup(response.text, "html.parser")
 
+    def extract_listing_urls_from_search(self, soup: BeautifulSoup, base_url: str) -> List[str]:
+        selectors = [
+            "article[data-testid='result-list-entry'] a[href*='/s-anzeige/']",
+            "li.ad-listitem a[href*='/s-anzeige/']",
+            "a[data-testid='result-title']",
+            "a[href*='/s-anzeige/']",
+        ]
+        seen: Dict[str, None] = {}
+        for selector in selectors:
+            for anchor in soup.select(selector):
+                href = anchor.get("href")
+                if not href:
+                    continue
+                normalized = href.split("?")[0]
+                if normalized.startswith("//"):
+                    normalized = "https:" + normalized
+                elif normalized.startswith("/"):
+                    normalized = urljoin(base_url, normalized)
+                elif not normalized.startswith("http"):
+                    normalized = urljoin(base_url, normalized)
+                if "/s-anzeige/" not in normalized:
+                    continue
+                seen.setdefault(normalized, None)
+        return list(seen.keys())
+
+    def collect_listing_urls(self, search_url: str) -> List[str]:
+        soup = self.fetch_soup(search_url)
+        listing_urls = self.extract_listing_urls_from_search(soup, search_url)
+        LOGGER.info("Found %d listing URLs on %s", len(listing_urls), search_url)
+        return listing_urls
+
     def parse_text(self, soup: BeautifulSoup, selector: Optional[str]) -> Optional[str]:
         if not selector:
             return None
@@ -564,11 +602,6 @@ class EbayCarScraper:
         return listings
 
 
-def load_urls(path: Path) -> List[str]:
-    with path.open("r", encoding="utf-8") as handle:
-        return [line.strip() for line in handle if line.strip()]
-
-
 def save_output(path: Path, listings: List[CarListing]) -> None:
     data = [asdict(listing) for listing in listings]
     path.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
@@ -584,10 +617,12 @@ def load_selector_config(path: Optional[Path]) -> Optional[Dict[str, str]]:
 def build_argument_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Scrape detailed eBay vehicle listings")
     parser.add_argument(
-        "--input",
-        type=Path,
-        default=Path("urls.txt"),
-        help="Text file containing one listing URL per line. Defaults to 'urls.txt'.",
+        "--search-url",
+        default=DEFAULT_SEARCH_URL,
+        help=(
+            "Kleinanzeigen search results URL whose listings should be scraped. "
+            "Defaults to the Stockach automotive search provided by the client."
+        ),
     )
     parser.add_argument(
         "--output",
@@ -624,14 +659,14 @@ def main(argv: Optional[List[str]] = None) -> int:
     args = parser.parse_args(argv)
     logging.basicConfig(level=getattr(logging, args.log_level.upper()), format="%(message)s")
 
-    if not args.input.exists():
-        LOGGER.error("Input file %s does not exist. Create the file or pass --input.", args.input)
-        return 1
-
-    urls = load_urls(args.input)
+    search_url = args.search_url
     selector_config = load_selector_config(args.selectors)
 
     scraper = EbayCarScraper(selector_config=selector_config, timeout=args.timeout)
+    urls = scraper.collect_listing_urls(search_url)
+    if not urls:
+        LOGGER.error("No listings found on %s", search_url)
+        return 1
     listings = scraper.scrape(urls)
     save_output(args.output, listings)
 

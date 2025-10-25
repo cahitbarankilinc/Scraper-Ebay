@@ -26,17 +26,23 @@ pip install -r requirements.txt
 
 ## Kullanım
 
-1. Ayrıntıları çekmek istediğiniz ilanların URL'lerini her satıra bir URL gelecek
-   şekilde `urls.txt` adında bir dosyaya kaydedin. Farklı bir dosya adı
-   kullanacaksanız komut satırında `--input` parametresi ile belirtin.
-2. Aşağıdaki komut ile listeyi işleyip sonuçları `output.json` dosyasına yazın:
+1. Arama sonuçlarındaki ilanların bağlantılarını toplamak istediğiniz URL'yi
+   belirleyin. Varsayılan olarak uygulama, Stockach bölgesindeki otomobil
+   sonuçlarını içeren aşağıdaki sabit bağlantıyı kullanır:
 
-   ```bash
-   python scraper.py --input urls.txt --output output.json
+   ```text
+   https://www.kleinanzeigen.de/s-autos/stockach/c216l8477r100+autos.ez_i:1910%2C+autos.km_i:1%2C+autos.power_i:1%2C
    ```
 
-   Dosya adlarını parametresiz bıraktığınızda komut varsayılan olarak `urls.txt`
-   dosyasını okuyup çıktıyı `output.json` olarak kaydeder.
+2. Komutu çalıştırarak arama sonuçlarında listelenen tüm ilanların ayrıntılarını
+   `output.json` dosyasına yazdırın:
+
+   ```bash
+    python scraper.py --output output.json
+   ```
+
+   Farklı bir arama sonuç sayfasını işlemek isterseniz `--search-url` parametresi
+   ile yeni bağlantıyı geçebilirsiniz.
 
 3. Site yapısı değiştiğinde CSS seçicilerini JSON formatında hazırlayarak
    `--selectors` parametresi ile güncelleyebilirsiniz.
