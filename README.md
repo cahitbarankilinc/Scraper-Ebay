@@ -13,6 +13,8 @@ kaydetmenizi sağlar.
 - Satıcı adı, aktif olduğu tarih, bireysel/kurumsal bilgisi, telefon numarası ve
   diğer aktif ilan sayısı
 - İlan açıklaması ve sayfada yer alan diğer teknik özellikler
+- Sayfadaki JSON-LD ve `__NEXT_DATA__` bloklarındaki yapılandırılmış verileri
+  okuyarak eksik kalan alanları otomatik tamamlama
 
 ## Kurulum
 
@@ -34,6 +36,11 @@ pip install -r requirements.txt
 
 3. Site yapısı değiştiğinde CSS seçicilerini JSON formatında hazırlayarak
    `--selectors` parametresi ile güncelleyebilirsiniz.
+
+Scraper, öncelikle HTML seçicilerini kullanır; bulunamayan alanlar için ise
+sayfada yer alan yapılandırılmış JSON verilerini devreye sokar. Böylece ilan
+kimliği, fiyat, satıcı bilgileri ve teknik özellikler gibi kritik veriler sitenin
+HTML yapısı değişse bile toplanmaya devam eder.
 
 Komut tamamlandığında `output.json` dosyasında her ilan için ayrıntılı kayıtlar
 bulunacaktır.
