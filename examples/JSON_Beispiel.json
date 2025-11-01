@@ -1,0 +1,47 @@
+{
+  "title": "Proxxon PD 230/E Drehbank",
+  "subtitle": "Mit umfangreichem Zubehör",
+  "description": "Gut gepflegte Proxxon PD 230/E Drehbank inkl. Dreibackenfutter, Reitstock und Ersatzteilen. Kaum benutzt, ideal für präzise Arbeiten im Modellbau.",
+  "price": {
+    "amount": 450.0,
+    "currency": "€",
+    "raw": "450 € VB",
+    "negotiable": true
+  },
+  "category_path": [
+    "Haus & Garten",
+    "Heimwerken",
+    "Werkzeug"
+  ],
+  "attributes": {
+    "Zustand": "Gebraucht",
+    "Versand": "Nur Abholung",
+    "Art": "Drehbank"
+  },
+  "ad_id": "1234567890",
+  "ad_type": "Angebot",
+  "posted_at": "24.03.2024",
+  "last_updated": "29.03.2024",
+  "shipping": "Nur Abholung",
+  "location": {
+    "street": "Beispielstraße 1",
+    "postal_code": "10115",
+    "city": "Berlin",
+    "state": "Berlin",
+    "district": null,
+    "country": "Deutschland",
+    "latitude": 52.532,
+    "longitude": 13.384
+  },
+  "seller": {
+    "name": "Max Mustermann",
+    "seller_type": "Privat",
+    "member_since": "Mitglied seit 2017",
+    "phone": "+49 123 456789",
+    "commercial_register": null
+  },
+  "images": [
+    "https://img.ebay-kleinanzeigen.de/proxxon-1.jpg",
+    "https://img.ebay-kleinanzeigen.de/proxxon-2.jpg"
+  ]
+}
